@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Chatbot Tiket Pesawat</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #e0f7fa;
+      display: flex;
+      justify-content: center;
+      padding-top: 50px;
+    }
+
+    .container {
+      background: #ffffff;
+      padding: 20px;
+      width: 400px;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .logo {
+      text-align: center;
+      margin-bottom: 15px;
+    }
+
+    .logo img {
+      width: 60px;
+    }
+
+    h2 {
+      text-align: center;
+      color: #00796b;
+      margin-top: 10px;
+    }
+
+    #chatbox {
+      height: 300px;
+      overflow-y: auto;
+      border: 1px solid #ccc;
+      padding: 10px;
+      margin-bottom: 10px;
+      background: #f1f8e9;
+      border-radius: 5px;
+    }
+
+    p {
+      margin: 5px 0;
+      padding: 5px;
+    }
+
+    .bot {
+      color: #004d40;
+    }
+
+    .user {
+      color: #33691e;
+      text-align: right;
+    }
+
+    #input {
+      width: 100%;
+      padding: 10px;
+      box-sizing: border-box;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="logo">
+      <img src="https://cdn-icons-png.flaticon.com/512/681/681494.png" alt="Logo Pesawat">
+    </div>
+    <h2>Chatbot Tiket Pesawat</h2>
+    <div id="chatbox"></div>
+    <input type="text" id="input" placeholder="Ketik jawaban lalu tekan Enter" onkeypress="handleKey(event)">
+  </div>
+
+  <script>
+    let step = 0;
+    let data = {};
+
+    const pertanyaan = [
+      "Halo! Siapa nama Anda?",
+      "Dari kota mana Anda berangkat?",
+      "Tujuan Anda ke mana?",
+      "Tanggal keberangkatan?",
+      "Berapa jumlah tiket yang dipesan?"
+    ];
+
+    const kunci = ["nama", "asal", "tujuan", "tanggal", "jumlah"];
+
+    function tampilkan(text, kelas = "bot") {
+      const chatbox = document.getElementById("chatbox");
+      const p = document.createElement("p");
+      p.className = kelas;
+      p.innerText = text;
+      chatbox.appendChild(p);
+      chatbox.scrollTop = chatbox.scrollHeight;
+    }
+
+    function handleKey(event) {
+      if (event.key === "Enter") {
+        const input = document.getElementById("input");
+        const jawaban = input.value.trim();
+        if (!jawaban) return;
+
+        tampilkan(jawaban, "user");
+        input.value = "";
+
+        if (step < pertanyaan.length) {
+          data[kunci[step]] = jawaban;
+          step++;
+          if (step < pertanyaan.length) {
+            setTimeout(() => tampilkan(pertanyaan[step]), 400);
+          } else {
+            setTimeout(tampilkanRingkasan, 500);
+          }
+        }
+      }
+    }
+
+    function tampilkanRingkasan() {
+      tampilkan("✅ Tiket berhasil dipesan!");
+      tampilkan("Nama: " + data.nama);
+      tampilkan("Dari: " + data.asal);
+      tampilkan("Tujuan: " + data.tujuan);
+      tampilkan("Tanggal: " + data.tanggal);
+      tampilkan("Jumlah Tiket: " + data.jumlah);
+    }
+
+    // Mulai percakapan
+    tampilkan(pertanyaan[step]);
+  </script>
+</body>
+</html>
